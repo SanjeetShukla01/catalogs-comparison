@@ -32,10 +32,13 @@ def list_references():
 
 def create_branch(branch_name, source_ref="main"):
     source_ref_details = client.get_reference(source_ref)
-    if not source_ref_details:
-        raise ValueError(f"Source reference '{source_ref}' does not exist.")
-    client.create_branch(branch_name, hash_on_ref=source_ref_details.hash_)
-    print(f"Branch '{branch_name}' created from '{source_ref}'.")
+    try:
+        branch = client.create_branch(branch_name, hash_on_ref=source_ref_details.hash_)
+        print(f"Branch '{branch_name}' created from '{source_ref}'.")
+        return branch
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
 
 def create_tag(tag_name, source_ref):
@@ -49,18 +52,27 @@ def create_tag(tag_name, source_ref):
         return None
 
 
-# def create_tag(tag_name, source_ref="main"):
-#     """Create a new tag in the Nessie catalog."""
-#     source_ref_details = client.get_reference(source_ref)
-#     tag = Tag(name=tag_name, hash_=source_ref_details.hash_)
-#     client.create_tag(tag_name, source_ref)
-#     print(f"Tag '{tag_name}' created from '{source_ref}'.")
-
+def create_table(table_name, schema, branch_name="main"):
+    try:
+        client.create_table(table_name, schema, branch_name)
+        print(f"Table '{table_name}' created in branch '{branch_name}'.")
+    except Exception as e:
+        print(f"Error: {e}")
 
 # Example usage
+table_schema = {
+    "type": "struct",
+    "fields": [
+        {"name": "id", "type": "int", "required": True},
+        {"name": "name", "type": "string", "required": True},
+        {"name": "created_at", "type": "timestamp", "required": False},
+    ],
+}
+create_table("my_table", table_schema)
+
+
 if __name__ == "__main__":
-    # List all references
     list_references()
-    # create_branch("dev-branch")
-    # create_tag("v1.0.0", source_ref="main", commit_hash="abc123def456")
-    create_tag("v1.0.0", source_ref="main")
+    create_branch("feature-branch")
+    create_tag("v2.0.0", source_ref="main")
+    list_references()
