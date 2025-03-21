@@ -1,1 +1,3 @@
-minio-data
+nessie/minio-data
+hive/downloads
+.idea
