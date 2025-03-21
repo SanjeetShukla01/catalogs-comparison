@@ -93,3 +93,5 @@ ps aux | grep hiveserver2
 
 
 
+sudo lsof -i :9001
+sudo kill <PID>
