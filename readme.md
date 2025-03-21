@@ -14,6 +14,7 @@ This Repo contains code local setup/prototype for following three catalogs
    - `cd /ui`
    - `yarn install `
    - `yarn start`
+
 Unity Catalog UI will be available at: http://localhost:3000
 
 
